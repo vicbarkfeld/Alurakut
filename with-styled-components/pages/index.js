@@ -28,7 +28,33 @@ export default function Home() {
     id: '3165615615546835',   
     title: 'Eu odeio acordar cedo',
     image: 'https://alurakut.vercel.app/capa-comunidade-01.jpg',
-  }]);
+  },
+  {
+    id: '657452357633',
+    title: 'Deus ajuda quem cedo Madruga',
+    image: 'https://uploads.metropoles.com/wp-content/uploads/2020/10/03162107/Seu-Madruga-1.jpg',
+  },
+  {
+    id: '65745235763387987987',
+    title: 'Eu tive um Orkut',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsXc97pR_eheweKDN48ZzKYWA8xwHzy7H79bZWuCQpd0-diFItQrZV6r2D72Umsc4sZMsQx-brPDYH1w&usqp=CAU',
+  },
+  {
+    id: '4673413763234543213213',
+    title: 'LBGTQIA+',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJ4tVAuTlQVBahX6HdWZWfi28zJLf__DQ3WL3TmjYicvYJafcE5OkgCvfpCK7UPTgpYkU&usqp=CAU',
+  },
+  {
+    id: '79741546',
+    title: 'Alura Lovers',
+    image: 'https://yt3.ggpht.com/ytc/AKedOLRszi3O39AB5-uw_1jkrxJppwegjToBgIKFIOqiiA=s900-c-k-c0x00ffffff-no-rj'
+  },
+  {
+    id: '6668555588877',
+    title: 'A Louca dos gatos',
+    image: 'https://pbs.twimg.com/media/DM3C5_jWsAA5wsX?format=jpg&name=small',
+  }
+]);
   
   /* const comunidades = ['Alurakut']; */
   const pessoasFavoritas = [
@@ -98,7 +124,27 @@ export default function Home() {
         </div>
 
         <div className="profileRelationsArea" style={{ gridArea: 'profileRelationArea' }}>
-        <ProfileRelationsBoxWrapper>
+        
+          <ProfileRelationsBoxWrapper>
+            <h2 className="smallTitle">
+              Pessoas da comunidade ({pessoasFavoritas.length})
+            </h2>
+
+            <ul>
+              {pessoasFavoritas.map((itemAtual) => {
+                return (
+                  <li key={itemAtual}>
+                    <a href="https://github.com/juunegreiros" target="_blank">
+                      <img src={`https://github.com/${itemAtual}.png`} />
+                      <span>{itemAtual}</span>
+                    </a>
+                  </li>
+                )
+              })}
+            </ul>
+          </ProfileRelationsBoxWrapper>
+          
+          <ProfileRelationsBoxWrapper>
             <h2 className="smallTitle">
               Comunidades ({comunidades.length})
             </h2>
@@ -115,24 +161,6 @@ export default function Home() {
               })}
             </ul>
         </ProfileRelationsBoxWrapper>
-          <ProfileRelationsBoxWrapper>
-            <h2 className="smallTitle">
-              Pessoas da comunidade ({pessoasFavoritas.length})
-            </h2>
-
-              <ul>
-              {pessoasFavoritas.map((itemAtual) => {
-                return (
-                  <li key={itemAtual}>
-                    <a href={`/users/${itemAtual}`}>
-                      <img src={`https://github.com/${itemAtual}.png`} />
-                      <span>{itemAtual}</span>
-                    </a>
-                  </li>
-                )
-              })}
-            </ul>
-          </ProfileRelationsBoxWrapper>
         </div>
       </MainGrid>
       </>
