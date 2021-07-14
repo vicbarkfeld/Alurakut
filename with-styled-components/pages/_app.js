@@ -13,7 +13,7 @@ const GlobalStyle = createGlobalStyle `
   body {
       font-family: sans-serif; 
       background-image: url('https://images8.alphacoders.com/442/thumb-1920-442502.jpg');
-      background-size: 90%;
+      background-size: 100%;
   }
 
   #__next {
