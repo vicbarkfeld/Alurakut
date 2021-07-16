@@ -1,6 +1,11 @@
 import styled from 'styled-components';
 import Box from '../Box';
 
+export const FormOptionsButtons = styled.div`
+  margin-bottom: 20px;
+  display: flex;
+  gap: 16px;
+`;
 
 export const ProfileRelationsBoxWrapper = styled(Box)`
   ul {

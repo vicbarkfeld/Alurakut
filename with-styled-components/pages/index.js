@@ -4,6 +4,7 @@ import Box from '../src/components/Box'
 import { AlurakutMenu, AlurakutProfileSidebarMenuDefault, OrkutNostalgicIconSet } from '../src/lib/AlurakutCommons';
 import { ProfileRelationsBoxWrapper } from '../src/components/ProfileRelations'
 
+
 function ProfileSidebar(propriedades) {
  return (
    <Box as="aside">
@@ -89,8 +90,9 @@ export default function Home() {
       const comunidadesVindasDoDato = respostaCompleta.data.allCommunities;
       console.log(respostaCompleta)
       setComunidades(comunidadesVindasDoDato)      
-    })
-  },[])
+    }); 
+  
+  },[]);
 
  // 1 - Criar um box que vai ter um map, baseado no itens do array que pegamos do github
 
@@ -112,6 +114,7 @@ export default function Home() {
 
          <Box>
            <h2 className="subTitle">O que você deseja fazer?</h2>
+           
            <form onSubmit={function handleCriaComunidade(e) {
               e.preventDefault();
               const dadosDoForm = new FormData(e.target);
