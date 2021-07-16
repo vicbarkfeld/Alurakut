@@ -51,43 +51,13 @@ function ProfileRelationsBox(propriedades) {
 export default function Home() {
  const githubUser = 'vicbarkfeld';
  
- const [comunidades, setComunidades] = React.useState([{ 
-   id: '3165615615546835',   
-   title: 'Eu odeio acordar cedo',
-   image: 'https://alurakut.vercel.app/capa-comunidade-01.jpg',
- },
- {
-   id: '657452357633',
-   title: 'Deus ajuda quem cedo Madruga',
-   image: 'https://uploads.metropoles.com/wp-content/uploads/2020/10/03162107/Seu-Madruga-1.jpg',
- },
- {
-   id: '65745235763387987987',
-   title: 'Se eu morrer, minha mãe me mata',
-   image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnzKl50yuNKy-LIPGEBmFsGUKluqJ9y02SXsM5bK321w_sieAQgRNm_jjNz_AFiM1g6ss&usqp=CAU',
- },
- {
-   id: '4673413763234543213213',
-   title: 'LBGTQIA+',
-   image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJ4tVAuTlQVBahX6HdWZWfi28zJLf__DQ3WL3TmjYicvYJafcE5OkgCvfpCK7UPTgpYkU&usqp=CAU',
- },
- {
-   id: '79741546',
-   title: 'Alura Lovers',
-   image: 'https://yt3.ggpht.com/ytc/AKedOLRszi3O39AB5-uw_1jkrxJppwegjToBgIKFIOqiiA=s900-c-k-c0x00ffffff-no-rj'
- },
- {
-   id: '6668555588877',
-   title: 'A Louca dos gatos',
-   image: 'https://pbs.twimg.com/media/DM3C5_jWsAA5wsX?format=jpg&name=small',
- }
-]);
+ const [comunidades, setComunidades] = React.useState([]);
  
  /* const comunidades = ['Alurakut']; */
  const pessoasFavoritas = ['juunegreiros', 'rafaballerini', 'bullas', 'omariosouto', 'rhubark', 'lucasmontano']
 
  const [seguidores, setSeguidores] = React.useState([]);
- // 0 - Pegar o array de dados do github  
+ // 0 - Pegar o array de dados do github  // GET
   React.useEffect(()=>{
     fetch(`https://api.github.com/users/vicbarkfeld/following`)
     .then((res)=>res.ok?res.json():false)
@@ -96,6 +66,30 @@ export default function Home() {
       setSeguidores(fullRes);
     })
 
+
+    // API GraphQL
+    fetch('https://graphql.datocms.com/', {
+      method: 'POST',
+      headers: {
+        'Authorization' : '449f4f191ef30ad190fde5b8b7c794',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({ "query": `query{
+        allCommunities {
+          title
+          id
+          imageUrl
+          creatorSlug
+        }
+      } ` })
+    })
+    .then((response) => response.json())
+    .then((respostaCompleta) => {
+      const comunidadesVindasDoDato = respostaCompleta.data.allCommunities;
+      console.log(respostaCompleta)
+      setComunidades(comunidadesVindasDoDato)      
+    })
   },[])
 
  // 1 - Criar um box que vai ter um map, baseado no itens do array que pegamos do github
@@ -119,21 +113,34 @@ export default function Home() {
          <Box>
            <h2 className="subTitle">O que você deseja fazer?</h2>
            <form onSubmit={function handleCriaComunidade(e) {
-             e.preventDefault();
-             const dadosDoForm = new FormData(e.target);
+              e.preventDefault();
+              const dadosDoForm = new FormData(e.target);
 
-             console.log('Campo: ', dadosDoForm.get('title'));
-             console.log('Campo: ', dadosDoForm.get('image'));
+              console.log('Campo: ', dadosDoForm.get('title'));
+              console.log('Campo: ', dadosDoForm.get('image'));
+              
+              const comunidade = {
+                title: dadosDoForm.get('title'),
+                imageUrl: dadosDoForm.get('image'),
+                creatorSlug: 'usuarioAleatorio'
+              }
+
+              fetch('/api/comunidades', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(comunidade)
+              })
+              .then(async (response) => {
+                const dados = await response.json();
+                console.log(dados.registroCriado);
+                const comunidade = dados.registroCriado;
+                const comunidadesAtualizadas = [...comunidades, comunidade];
+                setComunidades(comunidadesAtualizadas)
+              })
+            }}>
              
-             const comunidade = {
-               id: new Date().toISOString(),
-               title: dadosDoForm.get('title'),
-               image: dadosDoForm.get('image'),
-             }
-
-             const comunidadesAtualizadas = [...comunidades, comunidade];
-             setComunidades(comunidadesAtualizadas)
-           }} >
              <div>
                <input 
                placeholder="Qual vai ser o nome da sua comunidade?" 
@@ -165,13 +172,13 @@ export default function Home() {
            </h2>
 
            <ul>
-        {pessoasFavoritas.map((pessoa,i)=>{
+        {pessoasFavoritas.map((githubUser,i)=>{
           
           if (i<6)return(
-           <li key={pessoa}>
-           <a href= {`/users/${pessoa}`} >
-              <img src={`https://github.com/${pessoa}.png`}/>
-              <span>{pessoa}</span>
+           <li key={githubUser}>
+           <a href= {`/users/${githubUser}`} >
+              <img src={`https://github.com/${githubUser}.png`}/>
+              <span>{githubUser}</span>
             </a>
 
            </li>
@@ -188,8 +195,8 @@ export default function Home() {
         {comunidades.map((comunidade, i)=>{
           if(i<6) return(
            <li key={comunidade.id}>
-           <a href= {`/users/${comunidade.title}`} >
-              <img src={comunidade.image}/>
+           <a href= {`/communities/${comunidade.id}`} >
+              <img src={comunidade.imageUrl}/>
               <span>{comunidade.title}</span>
             </a>
 
