@@ -1,8 +1,11 @@
 import React from 'react';
+import nookies from 'nookies';
+import jwt from 'jsonwebtoken'
 import MainGrid from '../src/components/MainGrid'
 import Box from '../src/components/Box'
 import { AlurakutMenu, AlurakutProfileSidebarMenuDefault, OrkutNostalgicIconSet } from '../src/lib/AlurakutCommons';
 import { ProfileRelationsBoxWrapper } from '../src/components/ProfileRelations'
+
 
 
 function ProfileSidebar(propriedades) {
@@ -49,8 +52,8 @@ function ProfileRelationsBox(propriedades) {
  )
 }
 
-export default function Home() {
- const githubUser = 'vicbarkfeld';
+export default function Home(props) {
+ const githubUser = props.githubUser ; 
  
  const [comunidades, setComunidades] = React.useState([]);
  
@@ -106,7 +109,7 @@ export default function Home() {
        <div style={{ gridArea: 'welcomeArea' }}>
          <Box>
            <h1 className="title">
-             Bem vinda, Vic!
+             Bem vindo(a), {githubUser}
            </h1>
 
            <OrkutNostalgicIconSet fas={99} fotos={134} mensagens={10} recados={9} confiavel={3} legal={3} sexy={3}/>            
@@ -164,7 +167,10 @@ export default function Home() {
                Criar comunidade
              </button>
            </form>
-         </Box>          
+         </Box>
+         <Box>
+           <h2>Depoimentos</h2>
+         </Box>
        </div>
 
        <div className="profileRelationsArea" style={{ gridArea: 'profileRelationArea' }}>
@@ -175,6 +181,7 @@ export default function Home() {
            </h2>
 
            <ul>
+
         {pessoasFavoritas.map((githubUser,i)=>{
           
           if (i<6)return(
@@ -196,6 +203,7 @@ export default function Home() {
            </h2>
            <ul>
         {comunidades.map((comunidade, i)=>{
+          
           if(i<6) return(
            <li key={comunidade.id}>
            <a href= {`/communities/${comunidade.id}`} >
@@ -213,4 +221,17 @@ export default function Home() {
      </MainGrid>
      </>
  )
+}
+
+export async function getServerSideProps(context) {
+  const cookies = nookies.get(context)
+  const token = cookies.USER_TOKEN
+  const { githubUser } = jwt.decode(token)
+  console.log('Token decodificado')
+  
+  return {
+    props: {
+      githubUser
+    },
+  }
 }
